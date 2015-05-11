@@ -1,0 +1,39 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- jQueryの本体を読み込む。 -->
+<script src="js/jquery-1.11.0.min.js"></script>
+<!-- select od.date as ordered,od.order_code,og.organization as custom, od.est_delivery_date,p1.person_name AS inputter,ot.order_type,p2.person_name AS submitter, SUM(od.price * od. quantity) from Order_ddt as od, Person as p1, Person as p2, Organization as og, Order_Type as ot
+where od.custom_organization_code = og.organization_code and od.deliver_organization_code = og.organization_code and od.inputter = p1.person_code and od.submitter = p2.person_code and od.order_type_code = ot.order_type_code
+group by order_code; -->
+<script>
+	//ドキュメント配置後のイベント
+	$(document).ready(function(){
+		//送信ボタンをクリックしたら
+		$('#send').click(function(){
+			//Ajax通信を行う
+			$.ajax({
+				url:'Orderbill',		//受注伝票レコードをJSONで返すサーブレットを呼び出す
+				dataType:'json',		//JSONデータを返してもらい、オブジェクトに変換する
+				success:function(json){	//通信が成功したら
+					//JSONの連想配列をJSON文字列に変換する。
+					var jsonString = JSON.stringify(json);
+					//recieverにJSON文字列を書き込む
+					$('#reciever').val(jsonString);
+				},
+				error:function(){				//通信失敗時
+					alert('通信に失敗しました。')	//エラーメッセージを出す
+				}
+			});
+		});
+	});
+</script>
+</head>
+
+<body>
+<!-- サーバへリクエストを送信するボタン -->
+<input type="button" id="send" value="送信">
+<!-- 受信データを表示する領域 -->
+<textarea id="reciever" readonly cols="50" style="border:solid black 1px;height:250px;"></textarea>
+</body>
+</html>
